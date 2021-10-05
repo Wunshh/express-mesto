@@ -5,7 +5,7 @@ module.exports.getUsers = (req, res) => {
     .then(users => res.status(200).send({ users }))
     .catch((err) => {
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -19,7 +19,7 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
         return res.status(400).send({message: `${Object.values(err.errors).map(error => error.message).join( )}`})
       }
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -56,7 +56,7 @@ module.exports.updateUser = (req, res) => {
       return res.status(400).send({message: `${Object.values(err.errors).map(error => error.message).join( )}`})
     }
     console.log('Error:' + err);
-    res.status(500).send({ message: 'Произошла ошибка' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   });
 }
 
@@ -80,6 +80,6 @@ module.exports.updateUserAvatar = (req, res) => {
       return res.status(400).send({message: `${Object.values(err.errors).map(error => error.message).join( )}`})
     }
     console.log('Error:' + err);
-    res.status(500).send({ message: 'Произошла ошибка' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   });
 }

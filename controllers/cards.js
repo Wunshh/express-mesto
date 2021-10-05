@@ -6,7 +6,7 @@ module.exports.getCards = (req, res) => {
     .then(cards => res.status(200).send({ data: cards }))
     .catch((err) => {
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -21,7 +21,7 @@ module.exports.createCards = (req, res) => {
         return res.status(400).send({message: `${Object.values(err.errors).map(error => error.message).join( )}`})
       }
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -35,7 +35,7 @@ module.exports.deleteCards = (req, res) => {
     })
     .catch((err) => {
       console.log('Error:' + err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -51,7 +51,7 @@ module.exports.likeCard = (req, res) => {
       return res.status(400).send({message: "Переданы некорректные данные для постановки лайка"})
     }
     console.log('Error:' + err);
-    res.status(500).send({ message: 'Произошла ошибка' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   });
 }
 
@@ -67,6 +67,6 @@ module.exports.dislikeCard = (req, res) => {
       return res.status(400).send({message: "Переданы некорректные данные для удаления лайка"})
     }
     console.log('Error:' + err);
-    res.status(500).send({ message: 'Произошла ошибка' });
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   });
 }
