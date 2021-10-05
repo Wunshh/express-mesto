@@ -43,7 +43,6 @@ module.exports.updateUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true
     }
   )
   .then((user) => {
