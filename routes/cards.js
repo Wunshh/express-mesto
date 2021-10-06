@@ -5,7 +5,7 @@ const {
   createCards,
   deleteCards,
   likeCard,
-  dislikeCard
+  dislikeCard,
 } = require('../controllers/cards.js');
 
 router.get('/cards', getCards);
