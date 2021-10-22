@@ -3,6 +3,7 @@ const { JWT_SECRET } = require('../configs/index');
 
 const auth = (req, res, next) => {
   const token = req.cookies.jwt;
+
   if (!token) {
     return res.status(401).send({ message: 'Необходима авторизация' });
   }
@@ -14,7 +15,6 @@ const auth = (req, res, next) => {
   }
 
   req.user = payload;
-
   next();
 };
 

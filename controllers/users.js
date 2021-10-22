@@ -1,51 +1,52 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   JWT_SECRET,
   SOLT_ROUND,
 } = require('../configs/index');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const AuthenticationFailedError = require('../errors/AuthenticationFailedError');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.status(200).send({ users }))
     .catch((err) => {
-      console.log(`Error:${err}`);
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId).then((user) => {
     if (user) {
       return res.status(200).send({ data: user });
     }
-    return res.status(404).send({ message: '404 — Пользователь с указанным _id не найден.' });
+    throw new NotFoundError('Пользователь с указанным _id не найден.');
   })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Передан невалидный _id' });
+        throw new BadRequestError('Передан невалидный _id');
       }
-      console.log(`Error:${err}`);
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id).then((user) => {
     if (user) {
       return res.status(200).send({ data: user });
     }
-    return res.status(404).send({ message: '404 — Пользователь с указанным _id не найден.' });
+    throw new NotFoundError('Пользователь с указанным _id не найден.');
   })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Передан невалидный _id' });
+        throw new BadRequestError('Передан невалидный _id');
       }
-      console.log(`Error:${err}`);
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
@@ -60,41 +61,39 @@ module.exports.createUser = (req, res) => {
       .then(() => res.status(200).send({ message: 'Вы успешно зарегистрировались' }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          return res.status(400).send({ message: `${Object.values(err.errors).map((error) => error.message).join()}` });
+          throw new BadRequestError('Передан невалидные данные');
         }
-        console.log(`Error:${err}`);
-        return res.status(500).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }));
   });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).send({ message: 'Переданы невалидные данные' });
+    throw new BadRequestError('Передан невалидные данные');
   }
-  User.findOne({ email }).then((user) => {
+  User.findOne({ email }).select('+password').then((user) => {
     if (!user) {
-      return res.status(401).send({ message: 'Неправильные почта или пароль' });
+      throw new AuthenticationFailedError('Неправильные почта или пароль');
     }
     return bcrypt.compare(password, user.password).then((matched) => {
       if (!matched) {
-        return res.status(401).send({ message: 'Неправильные почта или пароль' });
+        throw new AuthenticationFailedError('Неправильные почта или пароль');
       }
-      res.cookie('jwt', JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-      })
-        .send({ _id: user._id });
+      }).end();
     })
       .catch((err) => {
-        console.log(`Error:${err}`);
-        return res.status(401).send({ message: 'Неправильные почта или пароль' });
+        next(err);
       });
   });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id,
     {
       name: req.body.name,
@@ -108,18 +107,17 @@ module.exports.updateUser = (req, res) => {
       if (user) {
         return res.status(200).send({ data: user._id });
       }
-      return res.status(404).send({ message: '404 — Пользователь с указанным _id не найден.' });
+      throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: `${Object.values(err.errors).map((error) => error.message).join()}` });
+        throw new BadRequestError('Передан невалидные данные');
       }
-      console.log(`Error:${err}`);
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id,
     {
       avatar: req.body.avatar,
@@ -132,13 +130,12 @@ module.exports.updateUserAvatar = (req, res) => {
       if (user) {
         return res.status(200).send({ data: user._id });
       }
-      return res.status(404).send({ message: '404 — Пользователь с указанным _id не найден.' });
+      throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: `${Object.values(err.errors).map((error) => error.message).join()}` });
+        throw new BadRequestError('Передан невалидные данные');
       }
-      console.log(`Error:${err}`);
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      next(err);
     });
 };

@@ -1,10 +1,17 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const { errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const {
   createUser,
   login,
+  getCurrentUser,
 } = require('./controllers/users');
+const {
+  deleteCards,
+} = require('./controllers/cards');
 const auth = require('./middlewares/auth');
 
 const app = express();
@@ -17,14 +24,57 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email({ tlds: { allow: false } }).required(),
+    password: Joi.string().required(),
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().custom((value, helper) => {
+      if (validator.isURL(value, { require_protocol: true })) {
+        return value;
+      }
+      return helper.message('Невалидная ссылка');
+    }),
+  }).unknown(true),
+}), createUser);
 
 app.use(auth);
+
+app.get('/users/me', auth, getCurrentUser);
+
+app.delete('/cards/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }).unknown(true),
+}), deleteCards);
 
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
 app.use((req, res) => res.status(404).send({ message: 'Страница не найдена' }));
+
+app.use(errors());
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+
+  next();
+});
 
 app.listen(PORT);
