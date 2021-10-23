@@ -64,9 +64,9 @@ module.exports.createUser = (req, res, next) => {
           next(new BadRequestError('Передан невалидные данные'));
         }
         next(err);
-      }))
-      .catch(next);
-  });
+      }));
+  })
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
@@ -91,7 +91,8 @@ module.exports.login = (req, res, next) => {
       .catch((err) => {
         next(err);
       });
-  });
+  })
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
