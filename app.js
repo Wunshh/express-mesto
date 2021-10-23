@@ -7,11 +7,8 @@ const { celebrate, Joi } = require('celebrate');
 const {
   createUser,
   login,
-  getCurrentUser,
 } = require('./controllers/users');
-const {
-  deleteCards,
-} = require('./controllers/cards');
+const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 
 const app = express();
@@ -48,18 +45,12 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.get('/users/me', auth, getCurrentUser);
-
-app.delete('/cards/:cardId', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
-  }).unknown(true),
-}), deleteCards);
-
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
-app.use((req, res) => res.status(404).send({ message: 'Страница не найдена' }));
+app.use((req, res) => {
+  throw new NotFoundError('Страница не найдена');
+});
 
 app.use(errors());
 

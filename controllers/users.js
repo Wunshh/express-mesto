@@ -8,6 +8,7 @@ const {
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const AuthenticationFailedError = require('../errors/AuthenticationFailedError');
+const ConflictError = require('../errors/ConflictError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.status(200).send({ users }))
@@ -25,7 +26,7 @@ module.exports.getUserById = (req, res, next) => {
   })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан невалидный _id');
+        next(new BadRequestError('Передан невалидный _id'));
       }
       next(err);
     });
@@ -40,7 +41,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан невалидный _id');
+        next(new BadRequestError('Передан невалидный _id'));
       }
       next(err);
     });
@@ -53,7 +54,7 @@ module.exports.createUser = (req, res, next) => {
 
   User.findOne({ email }).then((user) => {
     if (user) {
-      return res.status(409).send({ message: 'Пользователь с данным email уже зарегистрирован' });
+      throw new ConflictError('Пользователь с данным email уже зарегистрирован');
     }
     bcrypt.hash(req.body.password, SOLT_ROUND).then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -61,7 +62,7 @@ module.exports.createUser = (req, res, next) => {
       .then(() => res.status(200).send({ message: 'Вы успешно зарегистрировались' }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          throw new BadRequestError('Передан невалидные данные');
+          next(new BadRequestError('Передан невалидные данные'));
         }
         next(err);
       }));
@@ -111,7 +112,7 @@ module.exports.updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Передан невалидные данные');
+        next(new BadRequestError('Передан невалидные данные'));
       }
       next(err);
     });
@@ -134,7 +135,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Передан невалидные данные');
+        next(new BadRequestError('Передан невалидные данные'));
       }
       next(err);
     });
