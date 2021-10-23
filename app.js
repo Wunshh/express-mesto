@@ -48,7 +48,7 @@ app.use(auth);
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
-app.use((req, res) => {
+app.use(() => {
   throw new NotFoundError('Страница не найдена');
 });
 
