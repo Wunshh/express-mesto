@@ -40,7 +40,7 @@ app.post('/signup', celebrate({
       }
       return helper.message('Невалидная ссылка');
     }),
-  }).unknown(true),
+  }),
 }), createUser);
 
 app.use(auth);

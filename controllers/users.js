@@ -12,9 +12,7 @@ const ConflictError = require('../errors/ConflictError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({}).then((users) => res.status(200).send({ users }))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.getUserById = (req, res, next) => {
@@ -29,7 +27,8 @@ module.exports.getUserById = (req, res, next) => {
         next(new BadRequestError('Передан невалидный _id'));
       }
       next(err);
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getCurrentUser = (req, res, next) => {

@@ -32,9 +32,10 @@ module.exports.deleteCards = (req, res, next) => {
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         next(new ForbiddenError('Попытка удалить чужую карточку'));
+      } else {
+        Card.deleteOne(card)
+          .then(() => res.status(200).send({ data: card }));
       }
-      Card.deleteOne(card)
-        .then(() => res.status(200).send({ data: card }));
     })
     .catch(next);
 };
