@@ -8,6 +8,7 @@ const {
   createUser,
   login,
 } = require('./controllers/users');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 
@@ -20,6 +21,8 @@ app.use(cookieParser());
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
+
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -51,6 +54,8 @@ app.use('/', require('./routes/cards'));
 app.use(() => {
   throw new NotFoundError('Страница не найдена');
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
