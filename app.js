@@ -1,5 +1,4 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { errors } = require('celebrate');
@@ -11,32 +10,13 @@ const {
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
-// const cors = require('./middlewares/cors');
-const allowedCors = [
-  'https://last.nomoredomains.work',
-  'http://last.nomoredomains.work',
-  'localhost:3000',
-];
+const cors = require('./middlewares/cors');
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cookieParser());
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  const { method } = req;
-  const requestHeaders = req.headers['access-control-request-headers'];
-
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.end();
-  }
-  next();
-});
+app.use(cors);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
