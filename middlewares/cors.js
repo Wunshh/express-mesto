@@ -1,4 +1,8 @@
-const whitelist = ['http://example1.com', 'http://example2.com'];
+const whitelist = [
+  'https://last.nomoredomains.work',
+  'http://last.nomoredomains.work',
+  'localhost:3000',
+];
 
 const corsOptionsDelegate = (req, callback) => {
   let corsOptions;
