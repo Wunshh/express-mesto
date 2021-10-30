@@ -11,13 +11,17 @@ const {
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
-// const corsOptionsDelegate = require('./middlewares/cors');
+
+const corsOptions = {
+  origin: 'http://example.com',
+  optionsSuccessStatus: 200,
+};
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
