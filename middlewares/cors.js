@@ -1,22 +1,13 @@
-const allowedCors = [
-  'https://last.nomoredomains.work',
-  'http://last.nomoredomains.work',
-  'localhost:3000',
-];
+const whitelist = ['http://example1.com', 'http://example2.com'];
 
-const cors = (req, res, next) => {
-  const { origin } = req.headers;
-  const { method } = req;
-  const requestHeaders = req.headers['access-control-request-headers'];
-
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', '*');
+const corsOptionsDelegate = (req, callback) => {
+  let corsOptions;
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true };
+  } else {
+    corsOptions = { origin: false };
   }
-  if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.end();
-  }
-  next();
+  callback(null, corsOptions);
 };
 
-module.exports = cors;
+module.exports = corsOptionsDelegate;
