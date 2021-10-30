@@ -5,8 +5,7 @@ const allowCrossDomain = (req, res, next) => {
 
   if (req.method === 'OPTIONS') {
     res.send(200);
-  }
-  else {
+  } else {
     next();
   }
 };
