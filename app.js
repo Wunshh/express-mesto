@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
-const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const {
@@ -11,13 +10,13 @@ const {
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
-const corsOptionsDelegate = require('./middlewares/cors');
+const allowCrossDomain = require('./middlewares/cors');
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cors(corsOptionsDelegate));
+app.use(allowCrossDomain);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
