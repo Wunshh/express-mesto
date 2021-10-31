@@ -3,14 +3,14 @@ const { JWT_SECRET } = require('../configs/index');
 const AuthenticationFailedError = require('../errors/AuthenticationFailedError');
 
 const auth = (req, res, next) => {
-  const { authorization } = req.headers;
+  const token = req.cookies.jwt;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!token) {
     next(new AuthenticationFailedError('Необходима авторизация'));
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
+
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
@@ -18,6 +18,7 @@ const auth = (req, res, next) => {
   }
 
   req.user = payload;
+
   next();
 };
 
