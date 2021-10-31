@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   credentials: true,
-  origin: ['https://last.nomoredomains.work', 'http://last.nomoredomains.work', 'http://localhost:3000'],
+  origin: '*',
 }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
