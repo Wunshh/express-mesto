@@ -14,7 +14,7 @@ const allowCrossDomain = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', origin, 'Access-Control-Allow-Credentials', 'true');
   }
   if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Headers', requestHeaders);
+    res.header('Access-Control-Allow-Headers', requestHeaders, 'Access-Control-Allow-Credentials', 'true');
     return res.end();
   }
   next();
