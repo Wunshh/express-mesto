@@ -11,14 +11,14 @@ const AuthenticationFailedError = require('../errors/AuthenticationFailedError')
 const ConflictError = require('../errors/ConflictError');
 
 module.exports.getUsers = (req, res, next) => {
-  User.find({}).then((users) => res.status(200).send(users))
+  User.find({}).then((users) => res.status(200).send({ users }))
     .catch(next);
 };
 
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId).then((user) => {
     if (user) {
-      return res.status(200).send(user);
+      return res.status(200).send({ user });
     }
     throw new NotFoundError('Пользователь с указанным _id не найден.');
   })
@@ -34,7 +34,7 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id).then((user) => {
     if (user) {
-      return res.status(200).send(user);
+      return res.status(200).send({ user });
     }
     throw new NotFoundError('Пользователь с указанным _id не найден.');
   })
@@ -105,7 +105,7 @@ module.exports.updateUser = (req, res, next) => {
     })
     .then((user) => {
       if (user) {
-        return res.status(200).send(user._id);
+        return res.status(200).send({ _id: user._id });
       }
       throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
@@ -128,7 +128,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .then((user) => {
       if (user) {
-        return res.status(200).send(user._id);
+        return res.status(200).send({ _id: user._id });
       }
       throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
