@@ -1,5 +1,4 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { errors } = require('celebrate');
@@ -16,8 +15,6 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cookieParser());
-
 app.use(allowCrossDomain);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
