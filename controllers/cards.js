@@ -12,10 +12,15 @@ module.exports.getCards = (req, res, next) => {
 
 module.exports.createCards = (req, res, next) => {
   const ownerId = req.user._id;
-  const { name, link, createdAt } = req.body;
+  const {
+    name,
+    link,
+    createdAt,
+    likes,
+  } = req.body;
 
   return Card.create({
-    name, link, createdAt, likes: ownerId, owner: ownerId,
+    name, link, createdAt, likes, owner: ownerId,
   })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
