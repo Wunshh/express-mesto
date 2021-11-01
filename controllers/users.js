@@ -83,13 +83,8 @@ module.exports.login = (req, res, next) => {
       if (!matched) {
         throw new AuthenticationFailedError('Неправильные почта или пароль');
       }
-
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET);
-
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      }).end();
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {expiresIn: '7d'});
+      res.send({ token });
     })
       .catch((err) => {
         next(err);
