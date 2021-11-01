@@ -2,7 +2,6 @@ const allowedCors = [
   'https://last.nomoredomains.work',
   'http://last.nomoredomains.work',
   'localhost:3000',
-  'localhost:5000',
 ];
 
 const allowCrossDomain = (req, res, next) => {
