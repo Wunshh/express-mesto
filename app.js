@@ -11,7 +11,6 @@ const {
 } = require('./controllers/users');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
-// const allowCrossDomain = require('./middlewares/cors');
 
 const app = express();
 const PORT = 3000;
@@ -19,15 +18,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({
-  origin: [
-    'https://last.nomoredomains.work',
-    'http://last.nomoredomains.work',
-    'localhost:3000',
-    'localhost:5000',
-  ],
-  credentials: true,
-}));
+app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
