@@ -128,7 +128,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .then((user) => {
       if (user) {
-        return res.status(200).send(user.avatar);
+        return res.status(200).send({ avatar: user.avatar });
       }
       throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
