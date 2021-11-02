@@ -22,7 +22,7 @@ module.exports.createCards = (req, res, next) => {
     name, link, createdAt, likes, owner: ownerId,
   })
     .then((card) => {
-      res.status(200).send({ card });
+      res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
