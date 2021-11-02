@@ -22,6 +22,7 @@ module.exports.createCards = (req, res, next) => {
   return Card.create({
     name, link, createdAt, likes, owner: ownerId,
   })
+    .populate('owner')
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
