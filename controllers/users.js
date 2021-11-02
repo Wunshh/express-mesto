@@ -105,7 +105,7 @@ module.exports.updateUser = (req, res, next) => {
     })
     .then((user) => {
       if (user) {
-        return res.status(200).send({ name: user.name, about: user.about });
+        return res.status(200).send(user);
       }
       throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
@@ -128,7 +128,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .then((user) => {
       if (user) {
-        return res.status(200).send({ avatar: user.avatar });
+        return res.status(200).send(user);
       }
       throw new NotFoundError('Пользователь с указанным _id не найден.');
     })
