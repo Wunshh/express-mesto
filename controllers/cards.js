@@ -5,13 +5,12 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate('owner')
     .then((cards) => res.status(200).send(cards))
     .catch(next);
 };
 
 module.exports.createCards = (req, res, next) => {
-  const ownerId = req.user._id;
+  const ownerId = req.user;
   const {
     name,
     link,
@@ -22,8 +21,9 @@ module.exports.createCards = (req, res, next) => {
   return Card.create({
     name, link, createdAt, likes, owner: ownerId,
   })
-    .populate('owner')
-    .then((card) => res.status(200).send(card))
+    .then((card) => {
+      res.status(200).send({ card });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы невалидные данные'));
@@ -51,7 +51,6 @@ module.exports.likeCard = (req, res, next) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .populate('owner')
   .then((card) => {
     if (card) {
       return res.status(200).send(card);
@@ -70,7 +69,6 @@ module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .populate('owner')
   .then((card) => {
     if (card) {
       return res.status(200).send(card);
