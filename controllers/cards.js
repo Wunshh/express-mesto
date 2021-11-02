@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res, next) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (card) {
-      return res.status(200).send(card);
+      return res.status(200).send({ card });
     }
     throw new NotFoundError('Карточка с указанным _id не найдена.');
   })
@@ -70,7 +70,7 @@ module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (card) {
-      return res.status(200).send(card);
+      return res.status(200).send({ card });
     }
     throw new NotFoundError('Карточка с указанным _id не найдена.');
   })
