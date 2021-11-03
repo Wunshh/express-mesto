@@ -8,6 +8,7 @@ const allowCrossDomain = (req, res, next) => {
   } else {
     next();
   }
+  next();
 };
 
 module.exports = allowCrossDomain;
