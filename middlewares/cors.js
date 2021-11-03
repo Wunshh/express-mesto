@@ -17,7 +17,7 @@ const allowCrossDomain = (req, res, next) => {
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
   }
-  next();
+  next({ message: 'ошибка' });
 };
 
 module.exports = allowCrossDomain;
