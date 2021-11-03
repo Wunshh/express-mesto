@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { errors } = require('celebrate');
-const cors = require('cors');
 const { celebrate, Joi } = require('celebrate');
 const {
   createUser,
@@ -11,22 +10,16 @@ const {
 } = require('./controllers/users');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
+const allowCrossDomain = require('./middlewares/cors');
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(allowCrossDomain);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
-});
-
-app.use(cors());
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
 });
 
 app.post('/signin', celebrate({
