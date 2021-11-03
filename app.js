@@ -16,7 +16,7 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(allowCrossDomain);
+app.use(allowCrossDomain());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
