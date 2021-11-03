@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
+const cors = require('cors');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const {
@@ -10,13 +11,13 @@ const {
 } = require('./controllers/users');
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
-const allowCrossDomain = require('./middlewares/cors');
+
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(allowCrossDomain);
+app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
