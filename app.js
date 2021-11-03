@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.options('*', cors());
+app.use(cors());
 
 app.get('/crash-test', () => {
   setTimeout(() => {
