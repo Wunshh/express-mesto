@@ -1,20 +1,22 @@
-// const allowedCors = [
-//   'https://last.nomoredomains.work',
-//   'http://last.nomoredomains.work',
-//   'localhost:3000',
-//   'localhost:5000',
-// ];
+const allowedCors = [
+  'https://last.nomoredomains.work',
+  'http://last.nomoredomains.work',
+  'localhost:3000',
+];
 
 const allowCrossDomain = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://last.nomoredomains.work');
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  const { origin } = req.headers;
+  const { method } = req;
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-  if (req.method === 'OPTIONS') {
-    res.send(200);
-  } else {
-    next();
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
   }
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Headers', DEFAULT_ALLOWED_METHODS);
+    return res.end();
+  }
+  next();
 };
 
 module.exports = allowCrossDomain;
