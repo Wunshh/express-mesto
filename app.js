@@ -12,19 +12,27 @@ const {
 const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 
-const options = {
+// const options = {
+//   origin: '*',
+//   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+//   preflightContinue: false,
+//   optionsSuccessStatus: 204,
+//   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+//   credentials: true,
+// };
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors({
   origin: '*',
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
   credentials: true,
-};
-
-const app = express();
-const PORT = 3000;
-
-app.use(cors(options));
+}));
+// app.use('*', cors(options));
 app.use(express.json());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
