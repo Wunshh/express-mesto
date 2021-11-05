@@ -13,7 +13,7 @@ const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 
 const options = {
-  origin: ['*'],
+  origin: '*',
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
