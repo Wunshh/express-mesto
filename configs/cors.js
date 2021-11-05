@@ -4,6 +4,8 @@ const options = {
     'https://last.nomoredomains.work',
     'http://last.nomoredomains.work',
     'https://Wunshh.github.io',
+    'https://api.last.nomoredomains.work',
+    'http://api.last.nomoredomains.work',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
